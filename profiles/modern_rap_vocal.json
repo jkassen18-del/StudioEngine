@@ -1,0 +1,14 @@
+{
+  "name": "Modern Rap Vocal",
+  "params": {
+    "hpf_freq": 95, "dn_amount": 18, "dn_adaptive": 1,
+    "gate_threshold": -50, "gate_range": 15, "gate_release": 120,
+    "deess_freq": 6800, "deess_threshold": -34, "deess_range": 10,
+    "comp_threshold": -28, "comp_ratio": 4, "comp_attack": 4, "comp_release": 90, "comp_knee": 4, "comp_makeup": 4,
+    "eq_low_gain": -1, "eq_mud_gain": -3, "eq_mud_freq": 320, "eq_presence_gain": 2.5, "eq_presence_freq": 3500,
+    "eq_air_gain": 3, "eq_air_freq": 11000,
+    "mix_offset": 0, "mix_range": 6, "mix_unmask": 4,
+    "sat_drive": 6, "sat_mix": 30,
+    "lim_drive": 8, "lim_ceiling": -1, "lim_release": 60
+  }
+}

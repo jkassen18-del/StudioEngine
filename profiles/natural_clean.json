@@ -1,0 +1,12 @@
+{
+  "name": "Natural Clean",
+  "params": {
+    "hpf_freq": 75, "dn_amount": 12, "dn_sensitivity": 0, "dn_adaptive": 1,
+    "gate_threshold": -60, "gate_range": 10,
+    "deess_threshold": -32, "deess_range": 6,
+    "comp_threshold": -24, "comp_ratio": 2.5, "comp_attack": 10, "comp_release": 140, "comp_makeup": 2,
+    "eq_mud_gain": -1.5, "eq_presence_gain": 1, "eq_air_gain": 1.5,
+    "sat_drive": 3, "sat_mix": 15,
+    "lim_drive": 3, "lim_ceiling": -1
+  }
+}

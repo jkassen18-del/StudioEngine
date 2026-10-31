@@ -1,0 +1,12 @@
+{
+  "name": "Noisy Room Rescue",
+  "params": {
+    "hpf_freq": 110, "dn_amount": 28, "dn_sensitivity": 3, "dn_adaptive": 1,
+    "gate_threshold": -45, "gate_range": 25, "gate_release": 180,
+    "deess_threshold": -32, "deess_range": 8,
+    "comp_threshold": -24, "comp_ratio": 3, "comp_attack": 8, "comp_release": 120, "comp_makeup": 3,
+    "eq_mud_gain": -2.5, "eq_presence_gain": 2,
+    "sat_drive": 3, "sat_mix": 15,
+    "lim_drive": 4, "lim_ceiling": -1
+  }
+}

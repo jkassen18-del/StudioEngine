@@ -1,0 +1,72 @@
+name: Build Studio Engine
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+          - name: macOS
+            os: macos-14
+          - name: Linux
+            os: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libx11-dev libxrandr-dev libxinerama-dev \
+            libxcursor-dev libxcomposite-dev libxext-dev libfreetype-dev libfontconfig1-dev \
+            libgl1-mesa-dev
+
+      - name: Configure
+        shell: bash
+        run: |
+          EXTRA=""
+          if [ "$RUNNER_OS" == "macOS" ]; then EXTRA="-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64"; fi
+          cmake -B build -DCMAKE_BUILD_TYPE=Release $EXTRA
+
+      - name: Build
+        run: cmake --build build --config Release --parallel 4
+
+      - name: DSP unit tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Reference-matcher smoke test
+        shell: bash
+        run: |
+          python -m pip install numpy
+          python tests/make_test_audio.py test_audio
+          CLI=$(ls build/studio_engine_cli build/Release/studio_engine_cli.exe 2>/dev/null | head -1)
+          "$CLI" test_audio/ref_dry.wav test_audio/ref_master.wav --set lim_drive=10 --set match_4k=3
+          python tools/reference_match/studio_match.py analyze test_audio/ref_master.wav -o test_audio/ref.json
+          python tools/reference_match/studio_match.py match --reference test_audio/ref.json \
+            --vocal test_audio/raw_vocal.wav --cli "$CLI" -o test_audio/matched.json --iterations 3
+
+      - name: Collect artefacts
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp -R "build/StudioEngine_artefacts/Release/VST3" dist/ 2>/dev/null || true
+          cp -R "build/StudioEngine_artefacts/Release/AU" dist/ 2>/dev/null || true
+          cp -R "build/StudioEngine_artefacts/Release/Standalone" dist/ 2>/dev/null || true
+          cp build/studio_engine_cli* dist/ 2>/dev/null || cp build/Release/studio_engine_cli* dist/ 2>/dev/null || true
+          cp -R tools/reference_match dist/
+          cp README.md dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StudioEngine-${{ matrix.name }}
+          path: dist
