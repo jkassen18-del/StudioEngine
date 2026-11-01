@@ -158,6 +158,18 @@ studio_engine_cli --list-params
 
 ---
 
+## App Updater
+
+The repo also includes **App Updater**, a small standalone tool. It replaces an installed
+program's `.exe` with a new version you provide. It backs up the old version first, checks the
+result, rolls back automatically if anything fails, and can restore any earlier version later.
+It works for any app, not just Studio Engine. There is a desktop app (`App Updater`) and a
+command-line version (`app_updater_cli`).
+Windows users can download `AppUpdater-Windows.exe` from the *Windows test build* release.
+See [`tools/app_updater/README.md`](tools/app_updater/README.md).
+
+---
+
 ## Project layout
 
 ```
@@ -165,7 +177,8 @@ Source/dsp/          framework-free DSP (shared by plugin, CLI and tests)
 Source/plugin/       JUCE processor + editor
 tools/cli/           offline renderer (studio_engine_cli)
 tools/reference_match/studio_match.py   reference analyser / matcher
+tools/app_updater/   App Updater (core engine, CLI, JUCE desktop app)
 profiles/            starter profiles (+ your matched ones)
 references/          drop reference acapellas here
-tests/               DSP unit tests and synthetic test-audio generator
+tests/               DSP + App Updater unit tests and synthetic test-audio generator
 ```

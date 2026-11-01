@@ -44,7 +44,7 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel 4
 
-      - name: DSP unit tests
+      - name: Unit tests (DSP + App Updater)
         run: ctest --test-dir build -C Release --output-on-failure
 
       - name: Reference-matcher smoke test
@@ -73,6 +73,12 @@ jobs:
           cp build/studio_engine_cli* dist/ 2>/dev/null || cp build/Release/studio_engine_cli* dist/ 2>/dev/null || true
           cp -R tools/reference_match dist/
           cp README.md dist/
+          mkdir -p dist/AppUpdater
+          cp -R build/AppUpdater_artefacts/Release/* dist/AppUpdater/ 2>/dev/null || true
+          cp build/app_updater_cli* dist/AppUpdater/ 2>/dev/null || cp build/Release/app_updater_cli* dist/AppUpdater/ 2>/dev/null || true
+          cp tools/app_updater/README.md dist/AppUpdater/
+          if [ -f "dist/AppUpdater/App Updater.exe" ]; then cp "dist/AppUpdater/App Updater.exe" dist/AppUpdater-Windows.exe; fi
+          ls -R dist/AppUpdater
 
       - name: Build Windows installer
         if: runner.os == 'Windows'
@@ -93,11 +99,16 @@ jobs:
           tag_name: windows-test-build
           name: Studio Engine - Windows test build
           prerelease: true
-          files: dist/StudioEngine-Setup-*.exe
+          files: |
+            dist/StudioEngine-Setup-*.exe
+            dist/AppUpdater-Windows.exe
           body: |
             Windows installer for Studio Engine (latest test build).
             Download StudioEngine-Setup-1.0.0.exe below, run it, then rescan plugins in your DAW.
             Windows SmartScreen may warn because the installer is not code-signed: click "More info" -> "Run anyway".
+
+            AppUpdater-Windows.exe is the App Updater: a portable tool (no install) that replaces an
+            installed program's .exe with a new version, keeping a backup you can roll back to.
 
       - uses: actions/upload-artifact@v4
         with:
